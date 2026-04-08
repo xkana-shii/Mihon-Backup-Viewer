@@ -833,7 +833,7 @@ function getRepoIndex() {
   const repoUrls = getRepoFromSettings();
   if (!repoUrls) return [];
   const usedSources = window.data.backupSources?.map(source => source.sourceId);
-  const sources = ['sy', 'komikku'].includes(consts.fork.value)
+  const sources = ['sy', 'komikku', 'knskomikku'].includes(consts.fork.value)
     ? [
         { name: 'E-Hentai', lang: 'all', id: '6901', baseUrl: 'https://e-hentai.org' },
         { name: 'ExHentai', lang: 'all', id: '6902', baseUrl: 'https://exhentai.org' },

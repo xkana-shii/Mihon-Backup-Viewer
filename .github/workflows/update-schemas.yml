@@ -22,7 +22,7 @@ jobs:
       - name: Generate Schemas
         run: |
           cd site
-          uvx --from git+https://github.com/BrutuZ/tachibk-converter tachibk_converter --dump-schemas
+          uvx --from git+https://github.com/xkana-shii/tachibk-converter tachibk_converter --dump-schemas
 
       - name: Commit and push changes
         env:
