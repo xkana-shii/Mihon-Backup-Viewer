@@ -1,238 +1,149 @@
-syntax = "proto3";
+syntax = "proto2";
 
-package suwayomi.tachidesk.backup;
-
-//---------------------- Enums ----------------------
-
-// todo
-enum WebUIFlavor    { WEBUIFLAVOR_UNSPECIFIED = 0; }
-enum WebUIInterface { WEBUIINTERFACE_UNSPECIFIED = 0; }
-enum WebUIChannel   { WEBUICHANNEL_UNSPECIFIED = 0; }
-enum AuthMode       { AUTHMODE_UNSPECIFIED = 0; }
-enum KoreaderSyncChecksumMethod   { KOREADERSYNC_CHECKSUMMETHOD_UNSPECIFIED = 0; }
-enum KoreaderSyncLegacyStrategy   { KOREADERSYNC_LEGACYSTRATEGY_UNSPECIFIED = 0; }
-enum KoreaderSyncConflictStrategy { KOREADERSYNC_CONFLICTSTRATEGY_UNSPECIFIED = 0; }
-enum DatabaseType   { DATABASETYPE_UNSPECIFIED = 0; }
-enum CbzMediaType   { CBZMEDIATYPE_UNSPECIFIED = 0; }
-enum SortOrder      { SORTORDER_UNSPECIFIED = 0; }
-
-
-message Duration {
-  int64 seconds = 1;
-  int32 nanos = 2;
+enum UpdateStrategy {
+  ALWAYS_UPDATE = 0;
+  ONLY_FETCH_ONCE = 1;
 }
 
-message BackupSettingsDownloadConversionType {}
+message PreferenceValue {
+  required string type = 1;
+  required bytes truevalue = 2;
+}
 
-
+// Backup.kt
 message Backup {
   repeated BackupManga backupManga = 1;
   repeated BackupCategory backupCategories = 2;
   repeated BackupSource backupSources = 101;
   repeated BackupPreference backupPreferences = 104;
   repeated BackupSourcePreferences backupSourcePreferences = 105;
-
-  map<string, string> meta = 9000;
-  BackupServerSettings serverSettings = 9001;
+  repeated BackupExtensionRepos backupExtensionRepo = 106;
+  repeated BackupSavedSearch backupSavedSearches = 600;
+  repeated BackupFeed backupFeeds = 610;
+  required Map meta = 9000;
+  optional BackupServerSettings serverSettings = 9001;
 }
 
+// BackupCategory.kt
+message BackupCategory {
+  required string name = 1;
+  optional int32 order = 2;
+  optional int32 flags = 100;
+  required Map meta = 9000;
+}
 
+// BackupChapter.kt
+message BackupChapter {
+  required string url = 1;
+  required string name = 2;
+  optional string scanlator = 3;
+  optional bool read = 4;
+  optional bool bookmark = 5;
+  optional bool fillermark = 15;
+  optional int32 lastPageRead = 6;
+  optional int64 dateFetch = 7;
+  optional int64 dateUpload = 8;
+  optional float chapterNumber = 9;
+  optional int32 sourceOrder = 10;
+  required Map meta = 9000;
+}
+
+// BackupHistory.kt
+message BackupHistory {
+  required string url = 1;
+  required int64 lastRead = 2;
+}
+
+// BackupManga.kt
 message BackupManga {
-  int64 source = 1;
-  string url = 2;
-  string title = 3;
-  string artist = 4;
-  string author = 5;
-  string description = 6;
+  required int64 source = 1;
+  required string url = 2;
+  optional string title = 3;
+  optional string artist = 4;
+  optional string author = 5;
+  optional string description = 6;
   repeated string genre = 7;
-  int32 status = 8;
-  string thumbnailUrl = 9;
-  int64 dateAdded = 13;
-  int32 viewer = 14;
+  optional int32 status = 8;
+  optional string thumbnailUrl = 9;
+  optional int64 dateAdded = 13;
+  optional int32 viewer = 14;
   repeated BackupChapter chapters = 16;
   repeated int32 categories = 17;
   repeated BackupTracking tracking = 18;
-  bool favorite = 100;
-  int32 chapterFlags = 101;
-  int32 viewer_flags = 103;
+  optional bool favorite = 100;
+  optional int32 chapterFlags = 101;
+  optional int32 viewer_flags = 103;
   repeated BackupHistory history = 104;
-  int32 updateStrategy = 105;
+  optional UpdateStrategy updateStrategy = 105;
   repeated string excludedScanlators = 108;
-  int64 version = 109;
-  string notes = 110;
-  bool initialized = 111;
-  int32 customStatus = 602;
-  string customThumbnailUrl = 603;
-  string customTitle = 800;
-  string customArtist = 801;
-  string customAuthor = 802;
-  string customDescription = 804;
+  optional int64 version = 109;
+  optional string notes = 110;
+  optional bool initialized = 111;
+  optional int32 customStatus = 602;
+  optional string customThumbnailUrl = 603;
+  optional string customTitle = 800;
+  optional string customArtist = 801;
+  optional string customAuthor = 802;
+  optional string customDescription = 804;
   repeated string customGenre = 805;
-  map<string, string> meta = 9000;
+  required Map meta = 9000;
 }
 
-message BackupChapter {
-  string url = 1;
-  string name = 2;
-  string scanlator = 3;
-  bool read = 4;
-  bool bookmark = 5;
-  bool fillermark = 15;
-  int32 lastPageRead = 6;
-  int64 dateFetch = 7;
-  int64 dateUpload = 8;
-  float chapterNumber = 9;
-  int32 sourceOrder = 10;
-  map<string, string> meta = 9000;
-}
-
-message BackupTracking {
-  int32 syncId = 1;
-  int64 libraryId = 2;
-  int32 mediaIdInt = 3;
-  string trackingUrl = 4;
-  string title = 5;
-  float lastChapterRead = 6;
-  int32 totalChapters = 7;
-  float score = 8;
-  int32 status = 9;
-  int64 startedReadingDate = 10;
-  int64 finishedReadingDate = 11;
-  bool private = 12;
-  int64 mediaId = 100;
-}
-
-message BackupHistory {
-  string url = 1;
-  int64 lastRead = 2;
-}
-
-message BackupCategory {
-  string name = 1;
-  int32 order = 2;
-  int32 flags = 100;
-  map<string, string> meta = 9000;
-}
-
-message BackupSource {
-  string name = 1;
-  int64 sourceId = 2;
-  map<string, string> meta = 9000;
-}
-
-
+// BackupPreference.kt
 message BackupPreference {
-  string key = 1;
-  PreferenceValue value = 2;
+  required string key = 1;
+  required PreferenceValue value = 2;
 }
 
 message BackupSourcePreferences {
-  string sourceKey = 1;
+  required string sourceKey = 1;
   repeated BackupPreference prefs = 2;
 }
 
-message PreferenceValue {
-  oneof value {
-    int32 intValue = 1;
-    int64 longValue = 2;
-    float floatValue = 3;
-    string stringValue = 4;
-    bool booleanValue = 5;
-    StringSet stringSetValue = 6;
-  }
+message IntPreferenceValue {
+  required int32 value = 1;
 }
-message StringSet {
+
+message LongPreferenceValue {
+  required int64 value = 1;
+}
+
+message FloatPreferenceValue {
+  required float value = 1;
+}
+
+message StringPreferenceValue {
+  required string value = 1;
+}
+
+message BooleanPreferenceValue {
+  required bool value = 1;
+}
+
+message StringSetPreferenceValue {
   repeated string value = 1;
 }
 
+// BackupSource.kt
+message BackupSource {
+  optional string name = 1;
+  required int64 sourceId = 2;
+  required Map meta = 9000;
+}
 
-message BackupServerSettings {
-  string ip = 1;
-  int32 port = 2;
-  bool socksProxyEnabled = 3;
-  int32 socksProxyVersion = 4;
-  string socksProxyHost = 5;
-  string socksProxyPort = 6;
-  string socksProxyUsername = 7;
-  string socksProxyPassword = 8;
-  WebUIFlavor webUIFlavor = 9;
-  bool initialOpenInBrowserEnabled = 10;
-  WebUIInterface webUIInterface = 11;
-  string electronPath = 12;
-  WebUIChannel webUIChannel = 13;
-  double webUIUpdateCheckInterval = 14;
-  bool downloadAsCbz = 15;
-  string downloadsPath = 16;
-  bool autoDownloadNewChapters = 17;
-  bool excludeEntryWithUnreadChapters = 18;
-  int32 autoDownloadAheadLimit = 19;
-  int32 autoDownloadNewChaptersLimit = 20;
-  bool autoDownloadIgnoreReUploads = 21;
-  repeated string extensionRepos = 22;
-  int32 maxSourcesInParallel = 23;
-  bool excludeUnreadChapters = 24;
-  bool excludeNotStarted = 25;
-  bool excludeCompleted = 26;
-  double globalUpdateInterval = 27;
-  bool updateMangas = 28;
-  bool basicAuthEnabled = 29;
-  string authUsername = 30;
-  string authPassword = 31;
-  bool debugLogsEnabled = 32;
-  bool gqlDebugLogsEnabled = 33;
-  bool systemTrayEnabled = 34;
-  int32 maxLogFiles = 35;
-  string maxLogFileSize = 36;
-  string maxLogFolderSize = 37;
-  string backupPath = 38;
-  string backupTime = 39;
-  int32 backupInterval = 40;
-  int32 backupTTL = 41;
-  string localSourcePath = 42;
-  bool flareSolverrEnabled = 43;
-  string flareSolverrUrl = 44;
-  int32 flareSolverrTimeout = 45;
-  string flareSolverrSessionName = 46;
-  int32 flareSolverrSessionTtl = 47;
-  bool flareSolverrAsResponseFallback = 48;
-  bool opdsUseBinaryFileSizes = 49;
-  int32 opdsItemsPerPage = 50;
-  bool opdsEnablePageReadProgress = 51;
-  bool opdsMarkAsReadOnDownload = 52;
-  bool opdsShowOnlyUnreadChapters = 53;
-  bool opdsShowOnlyDownloadedChapters = 54;
-  SortOrder opdsChapterSortOrder = 55;
-  AuthMode authMode = 56;
-  repeated BackupSettingsDownloadConversionType downloadConversions = 57;
-  string jwtAudience = 58;
-  string koreaderSyncServerUrl = 59;
-  string koreaderSyncUsername = 60;
-  string koreaderSyncUserkey = 61;
-  string koreaderSyncDeviceId = 62;
-  KoreaderSyncChecksumMethod koreaderSyncChecksumMethod = 63;
-  KoreaderSyncLegacyStrategy koreaderSyncStrategy = 64;
-  double koreaderSyncPercentageTolerance = 65;
-  Duration jwtTokenExpiry = 66;
-  Duration jwtRefreshExpiry = 67;
-  bool webUIEnabled = 68;
-  DatabaseType databaseType = 69;
-  string databaseUrl = 70;
-  string databaseUsername = 71;
-  string databasePassword = 72;
-  KoreaderSyncConflictStrategy koreaderSyncStrategyForward = 73;
-  KoreaderSyncConflictStrategy koreaderSyncStrategyBackward = 74;
-  string webUISubpath = 75;
-  bool autoBackupIncludeManga = 76;
-  bool autoBackupIncludeCategories = 77;
-  bool autoBackupIncludeChapters = 78;
-  bool autoBackupIncludeTracking = 79;
-  bool autoBackupIncludeHistory = 80;
-  bool autoBackupIncludeClientData = 81;
-  bool autoBackupIncludeServerSettings = 82;
-  CbzMediaType opdsCbzMimetype = 83;
-  repeated BackupSettingsDownloadConversionType serveConversions = 84;
-  bool useHikariConnectionPool = 85;
-  int32 maxPagesInParallel = 86;
-  string basicAuthUsername = 99991;
-  string basicAuthPassword = 99992;
+// BackupTracking.kt
+message BackupTracking {
+  required int32 syncId = 1;
+  required int64 libraryId = 2;
+  optional int32 mediaIdInt = 3;
+  optional string trackingUrl = 4;
+  optional string title = 5;
+  optional float lastChapterRead = 6;
+  optional int32 totalChapters = 7;
+  optional float score = 8;
+  optional int32 status = 9;
+  optional int64 startedReadingDate = 10;
+  optional int64 finishedReadingDate = 11;
+  optional bool private = 12;
+  optional int64 mediaId = 100;
 }
