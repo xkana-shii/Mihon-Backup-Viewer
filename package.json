@@ -1,17 +1,17 @@
 {
   "dependencies": {
-    "esbuild": "^0.27.0"
+    "esbuild": "^0.28.0"
   },
   "devDependencies": {
     "husky": "^9.0.11",
-    "lint-staged": "^16.0.0",
+    "lint-staged": "^17.0.0",
     "postcss": "^8.5.4",
     "prettier": "^3.5.3",
     "prettier-plugin-css-order": "^2.1.2"
   },
   "optionalDependencies": {
     "long": "^5.2.3",
-    "pako": "^2.1.0",
+    "pako": "^3.0.0",
     "protobufjs": "^8.0.0"
   },
   "scripts": {
