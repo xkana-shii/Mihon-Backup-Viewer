@@ -110,6 +110,9 @@ message BackupManga {
   optional string notes = 110;
   optional bool initialized = 111;
   repeated bytes memo = 112;
+  optional int64 lastUpdate = 113;
+  optional int64 nextUpdate = 114;
+  optional int32 fetchInterval = 115;
   repeated BackupMergedMangaReference mergedMangaReferences = 600;
   optional BackupFlatMetadata flatMetadata = 601;
   optional int32 customStatus = 602;
@@ -119,6 +122,7 @@ message BackupManga {
   optional string customAuthor = 802;
   optional string customDescription = 804;
   repeated string customGenre = 805;
+  optional bool customGenreSet = 806;
 }
 
 // BackupMergedMangaReference.kt
