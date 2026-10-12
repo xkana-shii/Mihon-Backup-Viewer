@@ -38,6 +38,7 @@ message BackupChapter {
   optional string scanlator = 3;
   optional bool read = 4;
   optional bool bookmark = 5;
+  optional int32 bookmarkColor = 14;
   optional bool fillermark = 15;
   optional int64 lastPageRead = 6;
   optional int64 dateFetch = 7;
@@ -113,6 +114,9 @@ message BackupManga {
   optional int64 lastUpdate = 113;
   optional int64 nextUpdate = 114;
   optional int32 fetchInterval = 115;
+  repeated string scanlatorPriority = 614;
+  repeated string blacklistedChapters = 615;
+  repeated string scanlatorRangeRules = 616;
   repeated BackupMergedMangaReference mergedMangaReferences = 600;
   optional BackupFlatMetadata flatMetadata = 601;
   optional int32 customStatus = 602;
