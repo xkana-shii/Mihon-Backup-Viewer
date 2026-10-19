@@ -29,6 +29,9 @@ message BackupCategory {
   optional int64 id = 3;
   optional int64 flags = 100;
   optional bool hidden = 900;
+  optional int64 parentId = 901;
+  optional int32 trackStatus = 902;
+  optional int32 updateInterval = 903;
 }
 
 // BackupChapter.kt
@@ -114,9 +117,13 @@ message BackupManga {
   optional int64 lastUpdate = 113;
   optional int64 nextUpdate = 114;
   optional int32 fetchInterval = 115;
+  repeated int64 categoryIds = 613;
   repeated string scanlatorPriority = 614;
   repeated string blacklistedChapters = 615;
   repeated string scanlatorRangeRules = 616;
+  optional string smartScanlatorMergeOverride = 618;
+  optional bool hideBlacklistedChapters = 619;
+  optional bool scanlatorSettingsPresent = 620;
   repeated BackupMergedMangaReference mergedMangaReferences = 600;
   optional BackupFlatMetadata flatMetadata = 601;
   optional int32 customStatus = 602;
