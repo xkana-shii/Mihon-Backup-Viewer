@@ -15,49 +15,52 @@ message Backup {
   repeated BackupManga backupManga = 1;
   repeated BackupCategory backupCategories = 2;
   repeated BackupSource backupSources = 101;
-  repeated BackupPreference backupPreferences = 104;
-  repeated BackupSourcePreferences backupSourcePreferences = 105;
-  repeated BackupExtensionRepos backupExtensionRepo = 106;
-  repeated BackupSavedSearch backupSavedSearches = 600;
-  repeated BackupFeed backupFeeds = 610;
   required Map meta = 9000;
   optional BackupServerSettings serverSettings = 9001;
+  optional BackupUserSettings userSettings = 9002;
+  repeated BackupPreference backupPreferences = 104;
+  repeated BackupSourcePreferences backupSourcePreferences = 105;
 }
 
 // BackupCategory.kt
 message BackupCategory {
-  required string name = 1;
   optional int32 order = 2;
   optional int32 flags = 100;
+  optional int64 version = 601;
+  optional int64 uid = 602;
+  optional int64 lastModifiedAt = 603;
   required Map meta = 9000;
+  optional int64 id = 3;
+  optional int64 parentId = 901;
+  optional int32 trackStatus = 902;
+  optional int64 parentUid = 904;
+  optional bool hierarchyKnown = 907;
 }
 
 // BackupChapter.kt
 message BackupChapter {
-  required string url = 1;
-  required string name = 2;
   optional string scanlator = 3;
   optional bool read = 4;
   optional bool bookmark = 5;
   optional bool fillermark = 15;
+  optional int32 bookmarkColor = 14;
   optional int32 lastPageRead = 6;
   optional int64 dateFetch = 7;
   optional int64 dateUpload = 8;
   optional float chapterNumber = 9;
   optional int32 sourceOrder = 10;
+  optional int64 lastModifiedAt = 11;
+  optional int64 version = 12;
+  repeated bytes memo = 13;
   required Map meta = 9000;
 }
 
 // BackupHistory.kt
 message BackupHistory {
-  required string url = 1;
-  required int64 lastRead = 2;
 }
 
 // BackupManga.kt
 message BackupManga {
-  required int64 source = 1;
-  required string url = 2;
   optional string title = 3;
   optional string artist = 4;
   optional string author = 5;
@@ -75,10 +78,12 @@ message BackupManga {
   optional int32 viewer_flags = 103;
   repeated BackupHistory history = 104;
   optional UpdateStrategy updateStrategy = 105;
-  repeated string excludedScanlators = 108;
+  optional int64 lastModifiedAt = 106;
   optional int64 version = 109;
-  optional string notes = 110;
   optional bool initialized = 111;
+  repeated bytes memo = 112;
+  repeated string excludedScanlators = 108;
+  optional string notes = 110;
   optional int32 customStatus = 602;
   optional string customThumbnailUrl = 603;
   optional string customTitle = 800;
@@ -87,6 +92,11 @@ message BackupManga {
   optional string customDescription = 804;
   repeated string customGenre = 805;
   required Map meta = 9000;
+  repeated string scanlatorPriority = 614;
+  repeated string blacklistedChapters = 615;
+  repeated string scanlatorRangeRules = 616;
+  optional string smartScanlatorMergeOverride = 618;
+  optional bool scanlatorSettingsPresent = 620;
 }
 
 // BackupPreference.kt
@@ -101,40 +111,31 @@ message BackupSourcePreferences {
 }
 
 message IntPreferenceValue {
-  required int32 value = 1;
 }
 
 message LongPreferenceValue {
-  required int64 value = 1;
 }
 
 message FloatPreferenceValue {
-  required float value = 1;
 }
 
 message StringPreferenceValue {
-  required string value = 1;
 }
 
 message BooleanPreferenceValue {
-  required bool value = 1;
 }
 
 message StringSetPreferenceValue {
-  repeated string value = 1;
 }
 
 // BackupSource.kt
 message BackupSource {
   optional string name = 1;
-  required int64 sourceId = 2;
   required Map meta = 9000;
 }
 
 // BackupTracking.kt
 message BackupTracking {
-  required int32 syncId = 1;
-  required int64 libraryId = 2;
   optional int32 mediaIdInt = 3;
   optional string trackingUrl = 4;
   optional string title = 5;
