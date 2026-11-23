@@ -35,6 +35,8 @@ message BackupCategory {
   optional int32 trackStatus = 902;
   optional int64 parentUid = 904;
   optional bool hierarchyKnown = 907;
+  optional bool hidden = 900;
+  optional int32 updateInterval = 903;
 }
 
 // BackupChapter.kt
